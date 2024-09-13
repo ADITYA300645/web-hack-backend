@@ -90,4 +90,4 @@ app.post("/query", async (req, res) => {
     } catch (err) {}
 });
 
-module.exports = app;
+export default app;
