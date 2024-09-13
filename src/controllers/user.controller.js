@@ -1,6 +1,6 @@
 import express from 'express';
 import passport from 'passport';
-import User from '../models/user.model.js';
+import {User} from '../model/user.model.js'
 import { Strategy as GitHubStrategy } from 'passport-github2';
 
 const router = express.Router();
@@ -13,7 +13,7 @@ passport.use(new GitHubStrategy({
   },
   async function(accessToken, refreshToken, profile, done) {
     try {
-      let user = await User.findOne({ githubId: profile.id });
+      let user = await  User.findOne({ githubId: profile.id });
       if (!user) {
         user = new User({
           githubId: profile.id,

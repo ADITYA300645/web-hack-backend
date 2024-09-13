@@ -2,7 +2,6 @@ import express from 'express';
 import passport from 'passport';
 import { Strategy as GitHubStrategy } from 'passport-github2';
 import axios from 'axios';
-import User from '../models/user.model.js';
 
 const router = express.Router();
 
