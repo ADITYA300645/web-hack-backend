@@ -6,18 +6,21 @@ import axios from 'axios';
 const router = express.Router();
 
 // GitHub authentication route
-router.get('/', passport.authenticate('github', { scope: ['repo', 'user'] }));
+router.get('/', 
+  passport.authenticate('github', { scope: ['repo', 'user'] })
+);
 
 // Callback route for GitHub to redirect to after authentication
 router.get('/callback',
   passport.authenticate('github', { failureRedirect: '/' }),
   (req, res) => {
-    res.redirect('/repos');  // Redirect to a route after successful login
+    res.redirect('http://localhost:8000/auth/github/repos');  // Redirect to a route after successful login
   }
 );
 
 // GET route to fetch repositories of the authenticated user
 router.get('/repos', async (req, res) => {
+  console.log("hitted repos")
   if (!req.isAuthenticated()) {
     return res.status(401).json({ message: 'Unauthorized' });
   }
