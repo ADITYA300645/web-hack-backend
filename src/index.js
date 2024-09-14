@@ -5,6 +5,8 @@ dotenv.config({
     path: './.env'
 })
 
+
+
 connectDB()
  .then(()=>{
     app.get('/', (req, res)=>{

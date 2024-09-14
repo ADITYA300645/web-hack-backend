@@ -26,6 +26,9 @@ const userSchema = new Schema({
   },
   email: {
     type: String,
+  },
+  repo_data: {
+    type: String,
   }
 },{timestamps : true});
 

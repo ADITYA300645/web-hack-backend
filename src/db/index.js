@@ -19,15 +19,15 @@ const connectDB = async ()=>{
       // const data = await Task.findOne();
       // const data = await mongoose.connection.db.collection("admins").find({}).toArray();
       // console.log(data);
-      // const user = await User.create({
-        //     githubId : "123",
-        //     username : "akjshdfjk",
-        //     displayName : "hello",
-        //     profileUrl : "aksdkjasd",
-        //     accessToken: "aklsdnka",
-        //     avatarUrl : "ajksdjkfas",
-        //     email : "ajsdkfajsd@gmail.com",
-        // })
+      const user = await User.create({
+            githubId : "129",
+            username : "akjshdfjk",
+            displayName : "hello",
+            profileUrl : "aksdkjasd",
+            accessToken: "aklsdnka",
+            avatarUrl : "ajksdjkfas",
+            email : "ajsdkfajsd@gmail.com",
+        })
         // if(!user){
             //     return new ApiError(501, "Something went wrong while createing user");
             // }

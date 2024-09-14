@@ -2,9 +2,14 @@ import express from 'express';
 import passport from 'passport';
 import { Strategy as GitHubStrategy } from 'passport-github2';
 import axios from 'axios';
+import { User } from '../model/user.model.js';
+import mongoose from 'mongoose';
+import { ApiError } from '../utils/ApiError.js';
 
 const router = express.Router();
 
+
+let repoData;
 // GitHub authentication route
 router.get('/', 
   passport.authenticate('github', { scope: ['repo', 'user'] })
@@ -14,9 +19,15 @@ router.get('/',
 router.get('/callback',
   passport.authenticate('github', { failureRedirect: '/' }),
   (req, res) => {
-    res.redirect('http://localhost:8000/auth/github/repos');  // Redirect to a route after successful login
+    // res.redirect('http://localhost:8000/auth/github/repos');  // Redirect to a route after successful login
+    res.redirect('https://web-hack-backend.vercel.app/auth/github/repos');  // Redirect to a route after successful login
   }
 );
+
+router.get("/accessToken",(req,res)=>{
+  console.log("object");
+  res.json({accessToken : req.user.accessToken});
+})
 
 // GET route to fetch repositories of the authenticated user
 router.get('/repos', async (req, res) => {
@@ -29,6 +40,7 @@ router.get('/repos', async (req, res) => {
     const response = await axios.get('https://api.github.com/user/repos', {
       headers: { Authorization: `token ${req.user.accessToken}` }
     });
+   repoData = response.data;
     res.json(response.data);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -36,6 +48,12 @@ router.get('/repos', async (req, res) => {
 });
 
 
+router.get('/repoData', (req,res)=>{
+  if(!repoData){
+    throw new ApiError(501, "no data in repo")
+  }
+  return res.json(repoData);
+})
 
 // POST route to deploy a repo
 router.post('/deploy', async (req, res) => {
@@ -58,9 +76,17 @@ async function deployRepoToService(token, repoName) {
   return { success: true, message: `Deploying repo: ${repoName}` };
 }
 
+let repoD; 
+let ownerD;
+// router.get('/getRepoFile', async (req, res)=>{
+//   const owner = req.headers['owner'];  // accessing custom 'owner' header
+//   const repo = req.headers['repo']; 
+
+// })
 // New route to get repository structure and contents
 router.get('/getStructureRepo', async (req, res) => {
-  const { owner, repo } = req.query;
+  const owner = ownerD;
+  const repo = repoD;
 
   if (!req.isAuthenticated()) {
     return res.status(401).json({ message: 'Unauthorized' });
@@ -73,6 +99,9 @@ router.get('/getStructureRepo', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+//
+
 
 // Recursive function to traverse folders and fetch file contents
 async function getRepoStructure(token, owner, repo, path = '') {
