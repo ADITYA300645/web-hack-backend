@@ -107,7 +107,7 @@ router.get('/getStructureRepo', async (req, res) => {
 
 // Recursive function to traverse folders and fetch file contents
 async function getRepoStructure(token, owner, repo, path = '') {
-  const url = `https://api.github.com/repos/${ownerD}/${repoD}/contents/${path}`;
+  const url = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
   const headers = { Authorization: `token ${token}` };
 
   const response = await axios.get(url, { headers });
