@@ -87,8 +87,8 @@ let ownerD;
 router.get('/getStructureRepo', async (req, res) => {
   //  ownerD = req.headers['owner'];
   //  repoD = req.headers['repo'];\
-  ownerD = req.query.owner;
-  repoD = req.query.repo;
+  const owner = req.query.owner;
+  const repo = req.query.repo;
 
   if (!req.isAuthenticated()) {
     return res.status(401).json({ message: 'Unauthorized' });
