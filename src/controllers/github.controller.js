@@ -20,7 +20,7 @@ router.get('/callback',
   passport.authenticate('github', { failureRedirect: '/' }),
   (req, res) => {
     // res.redirect('http://localhost:8000/auth/github/repos');  // Redirect to a route after successful login
-    res.redirect('https://web-hack-backend.vercel.app/auth/github/repos');  // Redirect to a route after successful login
+    res.redirect('https://web-hack-backend.vercel.app/auth/github/repos');  // Redirect to a route after successful loginkasdklf
   }
 );
 
