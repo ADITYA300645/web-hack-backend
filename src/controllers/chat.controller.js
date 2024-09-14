@@ -4,7 +4,38 @@ const app  = Router();
 
 var currentSessionId = null;
 
+
+async function getRepoStructure(token, owner, repo, path = '') {
+    const url = `https://api.github.com/repos/${ownerD}/${repoD}/contents/${path}`;
+    const headers = { Authorization: `token ${token}` };
+  
+    const response = await axios.get(url, { headers });
+    const repoContent = response.data;
+  
+    let files = [];
+  
+    for (const item of repoContent) {
+      if (item.type === 'file') {
+        const fileResponse = await axios.get(item.download_url);
+        files.push({
+          fileName: item.name,
+          content: fileResponse.data
+        });
+      } else if (item.type === 'dir') {
+        const subDirFiles = await getRepoStructure(token, owner, repo, item.path);
+        files = files.concat(subDirFiles);
+      }
+    }
+  
+    return files;
+  }
+
+
 async function createChatSession() {
+
+
+
+
     try {
         const response = await axios.post(
             "https://api.on-demand.io/chat/v1/sessions",
@@ -66,15 +97,19 @@ function extractJSON(text) {
     return null;
 }
 
-app.get("/createChatSession", async (req, res) => {
+app.post("/createChatSession", async (req, res) => {
+
+    repo = req.body["repo"]
+    
     try {
         const response = await createChatSession();
         currentSessionId = response;
+        await submitQuery(currentSessionId, repo + "These Are the File And Structurues used in The Git Project Do Respond Accordingly From it ");
         res.json({ res: response });
     } catch (err) {
         console.error("error:", err);
         res.status(500).json({ error: "Something went wrong" });
-    }
+    }   
 });
 
 app.post("/query", async (req, res) => {
@@ -83,6 +118,17 @@ app.post("/query", async (req, res) => {
         query =
             req.body.query +
             "return the change in the Given Styled Json Format [{fileName:'someFilename.js',content:'thefullfilecontent',shellScript:'some Commands to run'}] also Generate each files As Given in Query ... Only Provide Json File No Thing ELSE";
+        const response = await submitQuery(req.body.sessionId, query);
+        // console.log(response.data.answer)
+        var json = extractJSON(response.data.answer)
+        res.json({res:json});
+    } catch (err) {}
+});
+app.post("/queryNormalApi", async (req, res) => {
+    try {
+
+        query =
+            req.body.query;
         const response = await submitQuery(req.body.sessionId, query);
         // console.log(response.data.answer)
         var json = extractJSON(response.data.answer)
