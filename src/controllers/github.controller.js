@@ -84,9 +84,11 @@ let ownerD;
 
 // })
 // New route to get repository structure and contents
-router.post('/getStructureRepo', async (req, res) => {
-   ownerD = req.headers['owner'];
-   repoD = req.headers['repo'];
+router.get('/getStructureRepo', async (req, res) => {
+  //  ownerD = req.headers['owner'];
+  //  repoD = req.headers['repo'];\
+  ownerD = req.query.owner;
+  repoD = req.query.repo;
 
   if (!req.isAuthenticated()) {
     return res.status(401).json({ message: 'Unauthorized' });
